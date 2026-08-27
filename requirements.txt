@@ -1,0 +1,11 @@
+streamlit
+supabase
+google-genai
+pydantic
+Pillow
+geopy
+folium
+streamlit-folium
+streamlit-geolocation
+pandas
+toml
