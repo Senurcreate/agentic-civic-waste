@@ -537,7 +537,7 @@ def render_how_it_works():
     with c2:
 
         st.subheader(
-            "📍 Location"
+            "📌 Location"
         )
 
         st.write(
