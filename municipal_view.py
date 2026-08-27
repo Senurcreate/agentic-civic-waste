@@ -3204,12 +3204,8 @@ def confirm_municipal_logout():
 def show_municipal_view():
 
     # ========================================================
-    # HEADER + LOGOUT
+    # HEADER
     # ========================================================
-
-    # ============================================================
-# MUNICIPAL HEADER
-# ============================================================
 
     title_col, export_col, logout_col = st.columns(
         [7.2, 1.6, 1.4],
@@ -3236,9 +3232,6 @@ def show_municipal_view():
                 "Municipal Dashboard"
             )
 
-           
-
-
     with export_col:
 
         if st.button(
@@ -3249,7 +3242,6 @@ def show_municipal_view():
 
             st.session_state.open_export_dialog = True
 
-
     with logout_col:
 
         if st.button(
@@ -3259,8 +3251,9 @@ def show_municipal_view():
         ):
 
             confirm_municipal_logout()
+
     # ========================================================
-    # MESSAGE
+    # MESSAGES
     # ========================================================
 
     notice = st.session_state.pop(
@@ -3323,20 +3316,35 @@ def show_municipal_view():
         )
     )
 
-    # Process any table/dialog action only after the live
-    # reports and duplicate decisions are available.
     process_pending_action(
         reports,
         decision_lookup
     )
 
     # ========================================================
-    # METRICS
+    # OVERVIEW — MAP + STATS
     # ========================================================
 
-    render_metrics(
-        reports
+    st.subheader(
+        "Overview"
     )
+
+    map_col, stats_col = st.columns(
+        [1.6, 1],
+        vertical_alignment="top"
+    )
+
+    with map_col:
+
+        render_map(
+            reports
+        )
+
+    with stats_col:
+
+        render_metrics(
+            reports
+        )
 
     st.divider()
 
@@ -3452,12 +3460,3 @@ def show_municipal_view():
         decision_lookup
     )
 
-    st.divider()
-
-    # ========================================================
-    # MAP
-    # ========================================================
-
-    render_map(
-        filtered_reports
-    )
