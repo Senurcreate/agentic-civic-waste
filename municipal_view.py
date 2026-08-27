@@ -3207,6 +3207,10 @@ def show_municipal_view():
     # HEADER + LOGOUT
     # ========================================================
 
+    # ============================================================
+# MUNICIPAL HEADER
+# ============================================================
+
     title_col, export_col, logout_col = st.columns(
         [7.2, 1.6, 1.4],
         vertical_alignment="center"
@@ -3214,13 +3218,26 @@ def show_municipal_view():
 
     with title_col:
 
-        st.caption(
-            "CleanSight Municipal Dashboard • V19"
+        logo_col, text_col = st.columns(
+            [1.2, 4.8],
+            vertical_alignment="center"
         )
 
-        st.title(
-            "🏢 CleanSight AI Municipal Dashboard"
-        )
+        with logo_col:
+
+            st.image(
+                "assets/cleansight_logo.png",
+                width=130
+            )
+
+        with text_col:
+
+            st.title(
+                "Municipal Dashboard"
+            )
+
+           
+
 
     with export_col:
 
@@ -3232,6 +3249,7 @@ def show_municipal_view():
 
             st.session_state.open_export_dialog = True
 
+
     with logout_col:
 
         if st.button(
@@ -3241,7 +3259,6 @@ def show_municipal_view():
         ):
 
             confirm_municipal_logout()
-
     # ========================================================
     # MESSAGE
     # ========================================================

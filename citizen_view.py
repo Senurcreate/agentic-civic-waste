@@ -384,9 +384,10 @@ def render_public_header():
 
     with logo_col:
 
-        st.markdown(
-            "### ♻️ CleanSight AI"
-        )
+        st.image(
+    "assets/cleansight_logo.png",
+    width=220
+)
 
     if auth_user:
 
