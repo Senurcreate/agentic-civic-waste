@@ -2,17 +2,17 @@
 # SUPABASE CLIENT
 # ============================================================
 
-import toml
+#import toml
 
 from supabase import create_client, Client
 
 
 # Load secrets
-secrets = toml.load("secrets.toml")
+#secrets = toml.load("secrets.toml")
 
 
-SUPABASE_URL = secrets.get("SUPABASE_URL")
-SUPABASE_KEY = secrets.get("SUPABASE_KEY")
+SUPABASE_URL = st.secrets["SUPABASE_URL"]
+SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 
 
 if not SUPABASE_URL:

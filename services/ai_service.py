@@ -3,7 +3,7 @@
 # ============================================================
 
 import io
-import toml
+
 
 from PIL import Image
 from google import genai
@@ -18,14 +18,10 @@ from pydantic import (
 # CONFIGURATION
 # ============================================================
 
-secrets = toml.load(
-    "secrets.toml"
-)
 
-
-GEMINI_API_KEY = secrets.get(
+GEMINI_API_KEY = st.secrets[
     "GEMINI_API_KEY"
-)
+]
 
 
 if not GEMINI_API_KEY:
