@@ -1,7 +1,7 @@
 # ============================================================
 # SUPABASE CLIENT
 # ============================================================
-
+import streamlit as st
 #import toml
 
 from supabase import create_client, Client
