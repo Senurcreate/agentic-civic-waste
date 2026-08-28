@@ -42,9 +42,7 @@ CleanSight AI helps solve this by combining **citizen evidence, AI-assisted imag
 
 This project was designed and developed by a single developer.
 
-### Developer
-
-**Name:** _Add your name here_  
+### Developer 
 **Role:** Designer & Developer  
 **Project:** CleanSight AI
 
