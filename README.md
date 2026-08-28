@@ -858,6 +858,16 @@ The current version is an MVP and requires further security, usability, AI evalu
 
 ---
 
+# 📄 License
+
+This project is licensed under the **MIT License**.
+
+You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software, provided that the original copyright notice and license terms are included.
+
+See the [`LICENSE`](LICENSE) file for the full license text.
+
+---
+
 <div align="center">
 
 ## ♻️ CleanSight AI
