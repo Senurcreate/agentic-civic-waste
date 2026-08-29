@@ -11,7 +11,7 @@ from services.auth_service import get_current_user, get_user_role
 
 st.set_page_config(
     page_title="CleanSight AI",
-    page_icon="assets/cleansight_logo.png",
+    page_icon="assets/icon.png",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
