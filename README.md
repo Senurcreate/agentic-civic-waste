@@ -872,6 +872,4 @@ See the [`LICENSE`](LICENSE) file for the full license text.
 
 ### Smarter reporting. Clearer municipal decisions. Cleaner communities.
 
-**Solo-designed and developed project**
-
 </div>
