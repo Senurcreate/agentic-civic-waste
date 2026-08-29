@@ -36,18 +36,6 @@ CleanSight AI helps solve this by combining **citizen evidence, AI-assisted imag
 
 ---
 
-## 👤 Project Type
-
-**Solo Project**
-
-This project was designed and developed by a single developer.
-
-### Developer 
-**Role:** Designer & Developer  
-**Project:** CleanSight AI
-
----
-
 ## 🎯 Main Goals
 
 CleanSight AI aims to:
