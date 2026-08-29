@@ -353,7 +353,6 @@ venv/
 __pycache__/
 *.pyc
 
-.streamlit/secrets.toml
 secrets.toml
 
 .env
