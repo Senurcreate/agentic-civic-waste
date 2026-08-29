@@ -459,6 +459,156 @@ def save_duplicate_decision(
     )
 
 
+def delete_duplicate_decision(
+    report_id,
+    related_report_id
+):
+    """Remove both directional duplicate-decision rows for a pair."""
+
+    response_one = (
+        supabase
+        .table("report_duplicate_decisions")
+        .delete()
+        .eq("report_id", report_id)
+        .eq("related_report_id", related_report_id)
+        .execute()
+    )
+
+    response_two = (
+        supabase
+        .table("report_duplicate_decisions")
+        .delete()
+        .eq("report_id", related_report_id)
+        .eq("related_report_id", report_id)
+        .execute()
+    )
+
+    return response_one, response_two
+
+
+def clear_group_for_reports(report_ids):
+    """Clear incident_group_id for the supplied report IDs."""
+
+    report_ids = [
+        str(report_id)
+        for report_id in report_ids
+        if report_id
+    ]
+
+    if not report_ids:
+        return None
+
+    return (
+        supabase
+        .table("waste_reports")
+        .update({"incident_group_id": None})
+        .in_("id", report_ids)
+        .execute()
+    )
+
+
+def cleanup_singleton_group(group_id):
+    """A valid incident group should contain at least two reports.
+
+    If an operation leaves only one report in a group, clear that final
+    report's group ID so the database and UI stay synchronized.
+    """
+
+    if not group_id:
+        return
+
+    response = (
+        supabase
+        .table("waste_reports")
+        .select("id")
+        .eq("incident_group_id", group_id)
+        .execute()
+    )
+
+    remaining_ids = [
+        row.get("id")
+        for row in (response.data or [])
+        if row.get("id")
+    ]
+
+    if len(remaining_ids) == 1:
+        clear_group_for_reports(remaining_ids)
+
+
+def separate_report_pair(report_id, related_report_id):
+    """Separate two reports cleanly while keeping the decision reversible.
+
+    If both reports currently share a group, the selected related report is
+    removed from that group. If this leaves the current report as the only
+    remaining member, the singleton group is also cleared. The SEPARATE
+    decision remains visible to duplicate management so the officer can
+    later group the pair again if needed.
+    """
+
+    response = (
+        supabase
+        .table("waste_reports")
+        .select("id,incident_group_id")
+        .in_("id", [report_id, related_report_id])
+        .execute()
+    )
+
+    rows = response.data or []
+    group_by_id = {
+        str(row.get("id")): row.get("incident_group_id")
+        for row in rows
+    }
+
+    report_group = group_by_id.get(str(report_id))
+    related_group = group_by_id.get(str(related_report_id))
+
+    if report_group and report_group == related_group:
+        clear_group_for_reports([related_report_id])
+        cleanup_singleton_group(report_group)
+
+    save_duplicate_decision(
+        report_id,
+        related_report_id,
+        "SEPARATE"
+    )
+
+
+def break_report_out_of_group(report_id):
+    """Remove one report from its current group and clean stale pair state."""
+
+    report = get_report_by_id(report_id)
+    if not report:
+        return None
+
+    group_id = report.get("incident_group_id")
+    if not group_id:
+        return None
+
+    members_response = (
+        supabase
+        .table("waste_reports")
+        .select("id")
+        .eq("incident_group_id", group_id)
+        .execute()
+    )
+
+    member_ids = [
+        row.get("id")
+        for row in (members_response.data or [])
+        if row.get("id") and str(row.get("id")) != str(report_id)
+    ]
+
+    clear_group_for_reports([report_id])
+    cleanup_singleton_group(group_id)
+
+    # A manual break-out should not leave stale GROUPED decisions that
+    # prevent the pair from being reconsidered later.
+    for member_id in member_ids:
+        delete_duplicate_decision(report_id, member_id)
+
+    return True
+
+
 def format_group_label(group_id):
 
     if not group_id:
@@ -675,9 +825,6 @@ def find_related_reports(
             (report_id, item_id)
         )
 
-        if decision == "SEPARATE":
-            continue
-
         if item_id in related:
             continue
 
@@ -735,11 +882,9 @@ def find_related_reports(
             **item,
             "relationship":
                 (
-                    "GROUPED"
-                    if decision
-                    == "GROUPED"
-                    else
-                    "POSSIBLE"
+                    "SEPARATE"
+                    if decision == "SEPARATE"
+                    else "POSSIBLE"
                 ),
             "distance_meters":
                 round(distance)
@@ -784,37 +929,33 @@ def duplicate_indicator(
     grouped_count = sum(
         1
         for item in related
-        if item.get(
-            "relationship"
-        )
-        == "GROUPED"
+        if item.get("relationship") == "GROUPED"
     )
 
-    possible_count = (
-        len(related)
-        -
-        grouped_count
+    separate_count = sum(
+        1
+        for item in related
+        if item.get("relationship") == "SEPARATE"
     )
 
-    if (
-        grouped_count
-        and possible_count
-    ):
+    possible_count = sum(
+        1
+        for item in related
+        if item.get("relationship") == "POSSIBLE"
+    )
 
-        return (
-            f"🔗 {grouped_count} grouped / "
-            f"⚠️ {possible_count} possible"
-        )
+    parts = []
 
     if grouped_count:
+        parts.append(f"🔗 {grouped_count} grouped")
 
-        return (
-            f"🔗 {grouped_count} grouped"
-        )
+    if possible_count:
+        parts.append(f"⚠️ {possible_count} possible")
 
-    return (
-        f"⚠️ {possible_count} nearby"
-    )
+    if separate_count:
+        parts.append(f"↔️ {separate_count} separate")
+
+    return " / ".join(parts) if parts else "—"
 
 
 # ============================================================
@@ -1739,6 +1880,8 @@ def show_details(report, all_reports=None, decision_lookup=None):
 
                 if relationship == "GROUPED":
                     badge = "🔗 Grouped"
+                elif relationship == "SEPARATE":
+                    badge = "↔️ Marked separate"
                 else:
                     badge = "⚠️ Possible duplicate"
 
@@ -2119,10 +2262,9 @@ def edit_dialog(report, all_reports=None, decision_lookup=None):
                             selected_related
                         ):
 
-                            save_duplicate_decision(
+                            separate_report_pair(
                                 report_id,
-                                related_id,
-                                "SEPARATE"
+                                related_id
                             )
 
                         st.session_state.municipal_notice = (
@@ -2163,12 +2305,13 @@ def edit_dialog(report, all_reports=None, decision_lookup=None):
 
                 try:
 
-                    remove_report_from_group(
+                    break_report_out_of_group(
                         report_id
                     )
 
                     st.session_state.municipal_notice = (
-                        "Report removed from its group."
+                        "Report removed from its group. "
+                        "Any remaining one-report group was cleared automatically."
                     )
 
                     st.rerun()
@@ -2436,10 +2579,9 @@ def duplicate_management_dialog(
 
                 for related_id in selected_ids:
 
-                    save_duplicate_decision(
+                    separate_report_pair(
                         report.get("id"),
-                        related_id,
-                        "SEPARATE"
+                        related_id
                     )
 
                 st.session_state.municipal_notice = (
