@@ -4,15 +4,11 @@
 
 ### AI-Assisted Civic Waste Reporting and Response System
 
-**A smart civic reporting platform that helps citizens report waste incidents clearly and helps municipal officers review, prioritize, group, map, and manage those reports.**
-
-<br>
+**A smart civic reporting platform that helps citizens report waste incidents and helps municipal officers review, prioritize, group, map, and manage reports.**
 
 `Python` · `Streamlit` · `Gemini` · `Supabase` · `PostgreSQL` · `Folium`
 
-<br>
-
-> **AI supports the decision-making process — the final municipal decision remains with the human officer.**
+> **AI supports decision-making. Final municipal decisions remain with human officers.**
 
 </div>
 
@@ -20,172 +16,70 @@
 
 ## ✨ Overview
 
-CleanSight AI was designed to make civic waste reporting more structured, useful, and actionable.
+CleanSight AI improves the way civic waste incidents are reported and reviewed.
 
-Traditional waste complaints can be vague. A report may say *“garbage is dumped near the road”*, but municipal officers may still need to determine:
+Citizens can upload an image, provide a description and location, and receive AI-assisted analysis before submitting the report.
 
-- what type of waste is present,
-- how much waste is there,
-- whether it is hazardous,
-- whether the road is accessible,
-- what vehicle may be suitable,
-- how urgent the incident is,
-- and whether multiple reports refer to the same incident.
-
-CleanSight AI helps solve this by combining **citizen evidence, AI-assisted image analysis, location data, priority scoring, municipal review, related-report grouping, mapping, and export tools** in one workflow.
+Municipal officers can then review reports, correct AI-generated information, identify priority incidents, manage related reports, view incidents on a map, and export report data.
 
 ---
 
-## 🎯 Main Goals
-
-CleanSight AI aims to:
-
-- improve the quality of civic waste reports,
-- reduce manual interpretation of incomplete complaints,
-- help municipal officers identify more urgent incidents,
-- support human review instead of replacing it,
-- reduce duplicate-report handling effort,
-- and provide a simple reporting experience for citizens.
-
----
-
-## 👥 Main Users
-
-<table>
-<tr>
-<td width="50%" valign="top">
+## 🚀 Key Features
 
 ### 🧑 Citizen
 
-Citizens can:
-
-- report waste as a guest,
-- create an account and sign in,
-- upload a waste image,
-- add a description,
-- provide GPS or typed location details,
-- add a landmark,
-- run AI-assisted analysis,
-- review the generated result,
-- and submit the final report.
-
-</td>
-<td width="50%" valign="top">
+* Report waste as a guest or signed-in user
+* Upload waste images
+* Add a simple everyday address
+* Use GPS/current location
+* Add landmarks and descriptions
+* Run AI-assisted waste analysis
+* Review the generated analysis
+* Submit reports to the municipality
 
 ### 🏢 Municipal Officer
 
-Municipal officers can:
-
-- sign in securely,
-- access the dashboard,
-- view reports on a map,
-- search and filter incidents,
-- review AI analysis,
-- correct report details,
-- add municipal notes,
-- update report status,
-- manage related reports,
-- group incidents,
-- and export report data.
-
-</td>
-</tr>
-</table>
-
-> Signed-in citizens use the same reporting interface as guest users in the current MVP.
+* Secure municipal sign-in
+* Dashboard with submitted reports
+* Search and filtering
+* Interactive report map
+* Review AI-generated analysis
+* Correct report information
+* Add municipal notes
+* Update report status
+* Detect and group related reports
+* Export report data as CSV
 
 ---
 
-## 🔄 Current Report Lifecycle
+## 🤖 AI-Assisted Analysis
 
-```text
-Citizen submits report
-        ↓
-SUBMITTED
-        ↓
-Municipal officer reviews / confirms / corrects
-        ↓
-REVIEWED
-```
+CleanSight AI uses **Google Gemini multimodal AI** to analyse uploaded waste images.
 
-### `SUBMITTED`
+The analysis can include:
 
-The citizen has completed and sent the report, but a municipal officer has not yet verified it.
+* waste type
+* estimated waste volume
+* visible hazards
+* hazard score
+* road accessibility
+* recommended collection vehicle
+* AI confidence
 
-### `REVIEWED`
-
-A municipal officer has checked the report and confirmed or corrected the available information.
-
-### Planned Future Workflow
-
-```text
-SUBMITTED
-→ REVIEWED
-→ ASSIGNED
-→ IN PROGRESS
-→ COMPLETED
-```
-
----
-
-## 🤖 AI-Assisted Waste Analysis
-
-CleanSight AI uses **Google Gemini multimodal AI** to analyse the uploaded waste image.
-
-The AI returns structured information such as:
-
-| Field | Purpose |
-|---|---|
-| `waste_present` | Detects whether visible waste is present |
-| `waste_type` | Identifies the likely waste category |
-| `description` | Produces a short structured description |
-| `estimated_volume` | Estimates the amount of waste |
-| `hazard_score` | Estimates visible hazard severity |
-| `visible_hazards` | Lists visible risk factors |
-| `road_access` | Assesses whether the location appears accessible |
-| `recommended_vehicle` | Suggests a suitable municipal vehicle |
-| `confidence` | Shows the model-reported confidence |
-
-### Example AI Output
-
-```json
-{
-  "waste_present": true,
-  "waste_type": "Mixed household waste",
-  "description": "Waste bags and loose plastic are visible beside the road.",
-  "estimated_volume": "Medium",
-  "hazard_score": 5,
-  "visible_hazards": [
-    "Possible sharp objects"
-  ],
-  "road_access": "Accessible by small collection vehicle",
-  "recommended_vehicle": "Small garbage collection truck",
-  "confidence": 0.86
-}
-```
-
-> The AI result is assistive. Municipal officers can review and correct the information.
+The AI output is treated as **decision support**, not as a final municipal decision.
 
 ---
 
 ## ⚡ Priority Calculation
 
-The current priority score combines:
+The current priority score considers:
 
-| Factor | Weight |
-|---|---:|
-| Hazard | **70%** |
-| Estimated Volume | **30%** |
+| Factor       | Weight |
+| ------------ | -----: |
+| Hazard       |    70% |
+| Waste Volume |    30% |
 
-### Volume Scores
-
-| Volume | Score |
-|---|---:|
-| Small | 30 |
-| Medium | 60 |
-| Large | 100 |
-
-### Priority Levels
+Priority levels:
 
 ```text
 Score >= 75  → HIGH
@@ -193,229 +87,178 @@ Score >= 45  → MEDIUM
 Otherwise    → LOW
 ```
 
-This gives greater importance to potentially hazardous incidents while still considering waste volume.
-
 ---
 
-## 🔗 Related / Duplicate Report Handling
+## 🔗 Related Report Handling
 
-Duplicate handling is performed on the **municipal side**.
-
-Citizens are not shown a *“Submit Anyway”* duplicate warning because this could discourage valid reporting.
+Potentially related or duplicate reports are handled on the **municipal side**.
 
 Municipal officers can:
 
-- identify nearby or potentially related reports,
-- compare incidents,
-- group related reports under the same incident group ID,
-- mark reports as separate,
-- and remove reports from a group when necessary.
+* compare nearby reports
+* group reports belonging to the same incident
+* mark reports as separate
+* remove reports from an existing group
 
-Original reports are preserved.
-
-> Current related-report detection mainly uses geographic proximity and a time window.
+Original citizen reports are always preserved.
 
 ---
 
-# 🏗️ System Architecture
+# 📸 Screenshots
 
-CleanSight AI is divided into four main layers.
+Click a section below to view its screenshots.
+
+<details>
+<summary><strong>🏠 Landing Page</strong></summary>
+
+<br>
+
+<img width="1366" height="678" alt="CleanSight-AI-·-Streamlit (12)" src="https://github.com/user-attachments/assets/64e2bb19-4379-4c01-8b49-cfa5e2a304df" />
+
+</details>
+
+<details>
+<summary><strong>🧑 Citizen Reporting</strong></summary>
+
+<br>
+
+### Upload Waste Image
+
+<img width="1366" height="2157" alt="CleanSight-AI-·-Streamlit (1)" src="https://github.com/user-attachments/assets/c2d05404-8a9e-4a76-88c4-bf3417484c96" />
+
+### Location
+
+<img width="1366" height="2209" alt="CleanSight-AI-·-Streamlit (4)" src="https://github.com/user-attachments/assets/7afbfe19-728e-44df-8823-c0888d16884e" />
+
+### AI Analysis
+<img width="1366" height="1440" alt="CleanSight-AI-·-Streamlit (5)" src="https://github.com/user-attachments/assets/13b0fcb6-e013-47aa-a8e7-29225f9b33f1" />
+
+<img width="1366" height="1538" alt="CleanSight-AI-·-Streamlit (7)" src="https://github.com/user-attachments/assets/624230aa-0c4c-40bf-a4d4-d35c158cadd1" />
+
+
+### Review & Submit
+
+<img width="1366" height="1716" alt="CleanSight-AI-·-Streamlit (8)" src="https://github.com/user-attachments/assets/7ba105e8-eb7d-484b-bd0f-2cddb3ad9ef3" />
+<img width="1366" height="778" alt="CleanSight-AI-·-Streamlit (9)" src="https://github.com/user-attachments/assets/2b87aca2-b289-4ca5-b4ad-d189345eaff5" />
+<img width="1366" height="885" alt="CleanSight-AI-·-Streamlit (10)" src="https://github.com/user-attachments/assets/9e7a3ab0-6851-404f-8296-02f67e2d96a8" />
+
+
+
+</details>
+
+<details>
+<summary><strong>🏢 Municipal Dashboard</strong></summary>
+
+<br>
+
+### Dashboard
+
+<img width="1366" height="2413" alt="CleanSight-AI-·-Streamlit (11)" src="https://github.com/user-attachments/assets/dbd01a8a-78ee-4957-86c9-29c5f1670765" />
+
+
+
+</details>
+
+<details>
+<summary><strong>🔐 Authentication</strong></summary>
+
+<br>
+
+### Sign In
+
+<img width="1366" height="679" alt="CleanSight-AI-·-Streamlit (13)" src="https://github.com/user-attachments/assets/d303e5c7-e8d6-4b22-aabb-518b31780afe" />
+
+### Sign Up
+
+<img width="1366" height="1171" alt="CleanSight-AI-·-Streamlit (14)" src="https://github.com/user-attachments/assets/3ffe06f8-ba0e-47ba-bc12-ed69a7b91e1b" />
+
+</details>
+
+---
+
+# 🔑 Demo Access
+
+## Citizen
+
+Citizens can use the guest reporting option or create an account through the application.
+
+## Municipal Officer
+
+Use the following account to access the municipal demonstration dashboard.
 
 ```text
-┌──────────────────────────────────────────────┐
-│              PRESENTATION TIER               │
-│                                              │
-│  Citizen Browser       Municipal Browser     │
-└──────────────────────┬───────────────────────┘
-                       │ HTTPS
-                       ▼
-┌──────────────────────────────────────────────┐
-│              APPLICATION TIER                │
-│                                              │
-│             Streamlit Application            │
-│                                              │
-│ Citizen Module        Municipal Module       │
-│ Authentication        Report Management      │
-│ AI Integration        Location Services      │
-│ Priority Logic        Grouping / Export      │
-└───────────────┬───────────────────┬──────────┘
-                │ HTTPS             │ HTTPS
-                ▼                   ▼
-┌──────────────────────────┐   ┌──────────────────────┐
-│     BACKEND / DATA       │   │ THIRD-PARTY SERVICES │
-│                          │   │                      │
-│        Supabase          │   │ Gemini Multimodal   │
-│                          │   │ Geocoding Service   │
-│ Authentication           │   │                      │
-│ PostgreSQL Database      │   └──────────────────────┘
-│ Storage                  │
-│ Row Level Security       │
-└──────────────────────────┘
+Municipal Email:    municipal2@example.com
+Password:           municipal123
 ```
 
 ---
 
-## 🖥️ Presentation Tier
-
-The presentation tier is the part users interact with directly.
-
-It includes:
-
-- the **Citizen Web Interface**
-- the **Municipal Dashboard**
-
-Both are accessed through a web browser.
-
-The browser communicates with the Streamlit application through **HTTPS requests**.
-
----
-
-## ⚙️ Application Tier
-
-The main application logic runs inside the **Streamlit application**.
-
-It handles:
-
-- citizen reporting,
-- authentication routing,
-- AI requests,
-- location processing,
-- priority calculation,
-- municipal review,
-- searching and filtering,
-- related-report detection,
-- grouping,
-- mapping,
-- and CSV export.
-
----
-
-## 🗄️ Backend / Data Tier
-
-CleanSight AI uses **Supabase** as its backend platform.
-
-Supabase provides:
-
-- authentication,
-- PostgreSQL database,
-- image storage,
-- API access,
-- and Row Level Security.
-
-### Main Data Stored
-
-The system stores information such as:
-
-- report ID,
-- citizen user ID when available,
-- image URL,
-- location,
-- latitude and longitude,
-- landmark,
-- citizen description,
-- AI-generated analysis,
-- hazard score,
-- priority,
-- status,
-- municipal notes,
-- and incident group ID.
-
----
-
-## 🌐 Third-Party Services
-
-### Gemini Multimodal AI
-
-The Streamlit application sends the uploaded waste image to Gemini using an HTTPS API request.
-
-#### Data Sent
-
-- waste image,
-- structured analysis instructions.
-
-#### Data Returned
-
-- waste type,
-- description,
-- estimated volume,
-- hazard score,
-- visible hazards,
-- road-access assessment,
-- recommended vehicle,
-- confidence.
-
----
-
-### Location / Geocoding Service
-
-The application also communicates with a geocoding service through HTTPS.
-
-#### Data Sent
-
-Depending on the selected location method:
-
-- typed address, or
-- latitude and longitude.
-
-#### Data Returned
-
-- geographic coordinates,
-- or a readable address.
-
----
-
-# 🔄 Main Data Flow
+# 🏗️ Architecture
 
 ```text
-Citizen opens CleanSight AI
+Citizen / Municipal Browser
+            │
+            ▼
+      Streamlit App
+       /         \
+      ▼           ▼
+  Supabase      Gemini
+ Auth / DB      Multimodal AI
+ Storage
+      │
+      ▼
+ PostgreSQL
+```
+
+### Main Flow
+
+```text
+Citizen uploads report
         ↓
-Uploads waste image
-        ↓
-Adds location / GPS / landmark
-        ↓
-Streamlit sends image to Gemini through HTTPS
-        ↓
-Gemini returns structured AI analysis
+AI analyses waste image
         ↓
 CleanSight AI calculates priority
         ↓
-Citizen reviews information
+Citizen reviews and submits
         ↓
-Citizen submits report
+Report stored in Supabase
         ↓
-Report data is stored in Supabase
+Municipal officer reviews
         ↓
-Status = SUBMITTED
-        ↓
-Municipal officer retrieves report
-        ↓
-Officer reviews / corrects / adds notes
-        ↓
-Status = REVIEWED
+Officer confirms or corrects report
+```
+
+Current report lifecycle:
+
+```text
+SUBMITTED → REVIEWED
+```
+
+Future versions may extend this to:
+
+```text
+SUBMITTED → REVIEWED → ASSIGNED → IN PROGRESS → COMPLETED
 ```
 
 ---
 
 # 🧰 Technology Stack
 
-| Category | Technology |
-|---|---|
-| Web UI / Frontend | Streamlit |
-| Application Logic | Python |
-| AI / Computer Vision | Google Gemini Multimodal |
-| Backend Platform | Supabase |
-| Database | PostgreSQL |
-| Authentication | Supabase Auth |
-| Image Storage | Supabase Storage |
-| Mapping | Folium |
-| Streamlit Map Integration | streamlit-folium |
-| Location / Geocoding | Geopy / Location Service |
-| GPS Integration | Streamlit Geolocation |
-| Structured AI Output | Pydantic |
-| Data Processing | Pandas |
-| Image Processing | Pillow |
-| Deployment | Streamlit Community Cloud |
-| Source Control | GitHub |
+| Area                 | Technology                |
+| -------------------- | ------------------------- |
+| Web Application      | Streamlit                 |
+| Programming Language | Python                    |
+| AI                   | Google Gemini Multimodal  |
+| Backend              | Supabase                  |
+| Database             | PostgreSQL                |
+| Authentication       | Supabase Auth             |
+| Storage              | Supabase Storage          |
+| Mapping              | Folium                    |
+| Geocoding            | Geopy                     |
+| Data Processing      | Pandas                    |
+| Image Processing     | Pillow                    |
+| Deployment           | Streamlit Community Cloud |
+| Source Control       | GitHub                    |
 
 ---
 
@@ -432,94 +275,50 @@ CleanSight-AI/
 ├── .gitignore
 │
 ├── auth/
-│   ├── __init__.py
 │   ├── sign_in.py
 │   └── sign_up.py
 │
 ├── services/
-│   ├── __init__.py
 │   ├── supabase_service.py
 │   ├── auth_service.py
 │   ├── ai_service.py
 │   ├── location_service.py
 │   └── report_service.py
 │
-└── assets/
-    └── cleansight_logo.png
+├── assets/
+│   └── cleansight_logo.png
+│
+└── docs/
+    └── screenshots/
 ```
 
 ---
 
 # 🚀 Local Setup
 
-## 1. Clone the Repository
+### 1. Clone the repository
 
 ```bash
 git clone YOUR_GITHUB_REPOSITORY_URL
 cd CleanSight-AI
 ```
 
-## 2. Create a Virtual Environment
-
-### Windows
+### 2. Create a virtual environment
 
 ```powershell
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 ```
 
-### macOS / Linux
+### 3. Install dependencies
 
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-## 3. Install Dependencies
-
-```bash
+```powershell
 python -m pip install -r requirements.txt
 ```
 
-## 4. Run the App
+### 4. Add Streamlit secrets
 
-```powershell
-python -m streamlit run app.py
-```
-
-If required on Windows:
-
-```powershell
-.\venv\Scripts\python.exe -m streamlit run app.py
-```
-
----
-
-# 📦 requirements.txt
-
-Typical dependencies include:
-
-```text
-streamlit
-supabase
-google-genai
-pydantic
-Pillow
-geopy
-folium
-streamlit-folium
-streamlit-geolocation
-pandas
-toml
-```
-
-Only packages used by the final application should remain in the final file.
-
----
-
-# 🔐 Streamlit Secrets
-
-For local development, create:
+Create:
 
 ```text
 .streamlit/secrets.toml
@@ -529,25 +328,23 @@ Add:
 
 ```toml
 GEMINI_API_KEY = "your-gemini-api-key"
-SUPABASE_URL = "https://your-project.supabase.co"
-SUPABASE_KEY = "your-supabase-anon-key"
+SUPABASE_URL = "your-supabase-url"
+SUPABASE_KEY = "your-supabase-key"
 ```
 
-Read the values in Python using:
+### 5. Run CleanSight AI
 
-```python
-import streamlit as st
-
-GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
-SUPABASE_URL = st.secrets["SUPABASE_URL"]
-SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
+```powershell
+python -m streamlit run app.py
 ```
-
-> ⚠️ Never commit `.streamlit/secrets.toml` or API keys to GitHub.
 
 ---
 
-# 🙈 Recommended .gitignore
+# 🔐 Security
+
+Never commit API keys, passwords, `.env` files, or Streamlit secrets to GitHub.
+
+Recommended `.gitignore`:
 
 ```gitignore
 venv/
@@ -555,7 +352,6 @@ venv/
 
 __pycache__/
 *.pyc
-*.pyo
 
 .streamlit/secrets.toml
 secrets.toml
@@ -563,274 +359,41 @@ secrets.toml
 .env
 .env.*
 
-.DS_Store
-Thumbs.db
-
 .vscode/
 .idea/
+
+.DS_Store
+Thumbs.db
 ```
 
----
-
-# 🗃️ Database Structure
-
-## `waste_reports`
-
-```sql
-CREATE TABLE IF NOT EXISTS public.waste_reports (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    user_id UUID NULL,
-    image_url TEXT,
-    location_address TEXT,
-    latitude DOUBLE PRECISION NOT NULL,
-    longitude DOUBLE PRECISION NOT NULL,
-    landmark TEXT,
-    citizen_description TEXT,
-    waste_type TEXT,
-    ai_description TEXT,
-    estimated_volume TEXT,
-    hazard_score INT,
-    visible_hazards JSONB DEFAULT '[]'::jsonb,
-    road_access TEXT,
-    recommended_vehicle TEXT,
-    confidence DOUBLE PRECISION,
-    priority_score DOUBLE PRECISION,
-    priority TEXT,
-    status TEXT DEFAULT 'SUBMITTED',
-    municipal_notes TEXT,
-    incident_group_id UUID
-);
-```
-
-## `profiles`
-
-```sql
-CREATE TABLE IF NOT EXISTS public.profiles (
-    user_id UUID PRIMARY KEY
-        REFERENCES auth.users(id)
-        ON DELETE CASCADE,
-    full_name TEXT,
-    role TEXT NOT NULL DEFAULT 'citizen'
-        CHECK (role IN ('citizen', 'municipal')),
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-```
-
-## `report_duplicate_decisions`
-
-```sql
-CREATE TABLE IF NOT EXISTS public.report_duplicate_decisions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    report_id UUID NOT NULL
-        REFERENCES public.waste_reports(id)
-        ON DELETE CASCADE,
-    related_report_id UUID NOT NULL
-        REFERENCES public.waste_reports(id)
-        ON DELETE CASCADE,
-    decision TEXT NOT NULL
-        CHECK (decision IN ('GROUPED', 'SEPARATE')),
-    decided_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    UNIQUE(report_id, related_report_id),
-    CHECK(report_id <> related_report_id)
-);
-```
-
----
-
-# 🔑 Authentication Roles
-
-The application currently supports:
-
-```text
-citizen
-municipal
-```
-
-### Citizen
-
-Citizens may sign up publicly.
-
-### Municipal
-
-Municipal accounts should be created through a controlled administrative process and assigned the `municipal` role.
-
----
-
-# 📤 Municipal Export
-
-The municipal dashboard supports CSV export for:
-
-- all reports,
-- current filtered view,
-- submitted reports,
-- reviewed reports,
-- grouped reports,
-- ungrouped reports,
-- high-priority reports,
-- and a specific incident group.
-
----
-
-# 🧪 Testing
-
-## Citizen Testing
-
-Recommended tests include:
-
-- guest reporting,
-- sign-up,
-- sign-in,
-- logout,
-- image upload,
-- invalid image handling,
-- GPS,
-- typed location,
-- landmark entry,
-- AI analysis,
-- review step,
-- final submission,
-- and required-field validation.
-
-## Municipal Testing
-
-Recommended tests include:
-
-- municipal sign-in,
-- dashboard loading,
-- statistics,
-- map,
-- search,
-- filters,
-- pagination,
-- report details,
-- editing,
-- municipal notes,
-- status changes,
-- related reports,
-- grouping,
-- separate decisions,
-- ungrouping,
-- CSV export,
-- and logout.
-
-## AI Validation
-
-Representative waste images can be manually compared against:
-
-- expected waste type,
-- expected volume,
-- visible hazards,
-- hazard score,
-- road-access recommendation,
-- recommended vehicle,
-- and AI confidence.
-
-> Formal AI accuracy should only be claimed after a structured evaluation has actually been completed.
+Municipal accounts should be assigned the appropriate role through a controlled administrative process.
 
 ---
 
 # ⚠️ Current Limitations
 
-- AI output may be inaccurate or uncertain.
-- Model confidence is not a calibrated probability.
-- Sri Lankan address matching can be inconsistent.
-- Geographic duplicate detection may produce false matches.
-- Related-report detection currently depends mainly on location and time.
-- The current lifecycle mainly uses `SUBMITTED` and `REVIEWED`.
-- The MVP is not yet a complete municipal fleet-management platform.
-- Production security and authorization policies require further hardening.
+* AI analysis may occasionally be incorrect or uncertain.
+* AI confidence is not a calibrated probability.
+* Sri Lankan address matching may sometimes be inconsistent.
+* Related-report detection currently relies mainly on location and time.
+* The current lifecycle primarily uses `SUBMITTED` and `REVIEWED`.
+* The system is an MVP and requires further production security and evaluation.
 
 ---
 
-# 🛣️ Future Roadmap
+# 🛣️ Future Improvements
 
-## Short-Term Improvements
+Planned improvements include:
 
-- stronger role security,
-- formal AI evaluation,
-- improved Sri Lankan location handling,
-- image and text similarity for duplicate detection,
-- expanded incident lifecycle,
-- improved audit history.
-
-## 🚛 AI-Assisted Collection Tracking
-
-Future versions may include:
-
-- municipal vehicle GPS,
-- route-progress tracking,
-- AI-assisted ETA prediction,
-- delay detection,
-- route-change detection,
-- citizen collection-window notifications,
-- updated ETA notifications,
-- and learning from historical collection patterns.
-
-## 🤖 Future AI Agent
-
-A future AI agent could monitor:
-
-- vehicle location,
-- route progress,
-- municipal workload,
-- collection delays,
-- incident priority,
-- and report status.
-
-The agent could assist with ETA updates and relevant notifications while municipal staff remain in control.
-
-## Long-Term Ideas
-
-- citizen report history,
-- citizen status tracking,
-- municipal team assignment,
-- route optimization,
-- waste hotspot analysis,
-- municipal analytics,
-- and collection performance reporting.
-
----
-
-# 🌍 Deployment
-
-The application can be deployed using **Streamlit Community Cloud**.
-
-### Deployment Flow
-
-```text
-Local Project
-    ↓
-GitHub Repository
-    ↓
-Streamlit Community Cloud
-    ↓
-Public Application URL
-```
-
-### Required Streamlit Cloud Secrets
-
-```toml
-GEMINI_API_KEY = "your-real-key"
-SUPABASE_URL = "your-real-supabase-url"
-SUPABASE_KEY = "your-real-supabase-anon-key"
-```
-
----
-
-# 🛡️ Security Notes
-
-Before production use:
-
-- keep API keys out of GitHub,
-- use HTTPS,
-- configure Supabase Row Level Security,
-- restrict municipal actions by role,
-- store only necessary personal data,
-- use the Supabase anon/publishable key,
-- never expose the service-role key,
-- review storage permissions,
-- and keep AI-generated decisions subject to human verification.
+* stronger role-based security
+* improved Sri Lankan location handling
+* image/text similarity for duplicate detection
+* expanded incident lifecycle
+* audit history
+* municipal assignment
+* route optimisation
+* waste hotspot analytics
+* collection tracking and ETA prediction
 
 ---
 
@@ -838,9 +401,7 @@ Before production use:
 
 CleanSight AI is an **AI-assisted civic reporting and municipal decision-support system**.
 
-AI-generated output may contain errors and should not be treated as a verified municipal decision without human review.
-
-The current version is an MVP and requires further security, usability, AI evaluation, and operational validation before real-world municipal deployment.
+AI-generated information may contain errors and should be reviewed by municipal officers before being treated as verified information.
 
 ---
 
@@ -848,9 +409,7 @@ The current version is an MVP and requires further security, usability, AI evalu
 
 This project is licensed under the **MIT License**.
 
-You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software, provided that the original copyright notice and license terms are included.
-
-See the [`LICENSE`](LICENSE) file for the full license text.
+See [`LICENSE`](LICENSE) for details.
 
 ---
 
