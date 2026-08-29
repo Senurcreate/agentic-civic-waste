@@ -1,6 +1,6 @@
 streamlit
 supabase
-google-genai
+google-genai==2.20.0
 pydantic
 Pillow
 geopy
