@@ -3322,29 +3322,22 @@ def show_municipal_view():
     )
 
     # ========================================================
-    # OVERVIEW — MAP + STATS
+    # OVERVIEW — STATS FIRST, FULL-WIDTH MAP BELOW
     # ========================================================
 
     st.subheader(
         "Overview"
     )
 
-    map_col, stats_col = st.columns(
-        [1.6, 1],
-        vertical_alignment="top"
+    # Row 1: dashboard statistics across the full width
+    render_metrics(
+        reports
     )
 
-    with map_col:
-
-        render_map(
-            reports
-        )
-
-    with stats_col:
-
-        render_metrics(
-            reports
-        )
+    # Row 2: full-width map for better geographic coverage
+    render_map(
+        reports
+    )
 
     st.divider()
 
@@ -3459,4 +3452,3 @@ def show_municipal_view():
         reports,
         decision_lookup
     )
-
